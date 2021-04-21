@@ -1,0 +1,139 @@
+# Full Name
+# Student ID
+import gzip
+
+# THIS FUNCTION IS COMPLETED FOR YOU (DO NOT MODIFY IT)
+def import_icd(gzfile="DIAGNOSES_ICD.txt.gz"):
+    """
+    Args:    
+        gzfile : string for the path to file DIAGNOSES_ICD.txt.gz
+    Returns:    
+        patient_icd : dictionary with 
+            key: patient ID
+            value: set of unique ICD codes
+    """
+    f = gzip.open(gzfile, 'r')    
+    f.readline()    
+    patient_icd = {}        
+    
+    for line in f:
+        line = line.decode().rstrip()
+        values = line.split(',')
+        pat = values[0]
+        icd = values[2]
+        
+        if pat not in patient_icd:
+            patient_icd[pat] = set()
+        patient_icd[pat].add(icd)
+            
+    f.close()
+    
+    return patient_icd
+
+
+# THIS FUNCTION IS COMPLETED FOR YOU (DO NOT MODIFY IT)
+def get_icd_index(patient_icd):
+    """    
+    Args:
+        patient_icd : dict returned from import_icd function
+    Returns:    
+        icd_index : a dict with
+            key: icd code
+            value: icd index (0,...,6968)
+    Behaviour:
+        Omit ICD code that start with 428 because it is the label that we are
+        going to predict
+        The exact index for each ICD code is not important
+    """
+    icd_index = dict()
+    n_icd = 0
+                
+    for icd_set in patient_icd.values():
+        for icd in icd_set:
+            if icd not in icd_index and not icd.startswith('428'):
+                icd_index[icd] = n_icd
+                n_icd += 1        
+    return icd_index
+
+
+
+
+# Part (a)
+import numpy as np
+
+def process_patient_icd(patient_icd, icd_index):
+    """    
+    Args:    
+        patient_icd : dict from import_icd
+        icd_index : dict from get_icd_index
+    Returns:
+        X : numpy ndarray with 46,517 rows and 6969 columns
+        y : numpy ndarray with 46,517 rows and 1 column
+    """        
+    # WRITE YOUR CODE HERE
+
+
+
+# Part (b)
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+def train_and_evaluate_LR(X,y):
+    """    
+    Args:
+        X : numpy ndarray with 46,517 rows and 6969 columns
+        y : numpy ndarray with 46,517 rows and 1 column
+    Returns:
+        fit : the trained logistic regression model
+    """
+    # WRITE YOUR CODE HERE
+
+
+
+
+
+
+# Part (c)
+def plot_top5_ICD_codes(fit_lr, icd_index, icd9_info_file="icd9_info.txt"):
+    """    
+    Args:
+        fit_lr : trained LogisticRegression obtained from train_and_evaluate_LR
+        icd_index : dict obtained from get_icd_index
+        icd9_info_file : path to the file icd9_info.txt
+    Returns:
+        Nothing
+    Behaviour:
+        Plot a barplot for the top 5 ICD-9 codes with the highest 
+        linear coefficients from the trained fit_lr model
+        The y-axis is the titles of the 5 ICD-9 codes
+        The x-axis is the values of the linear coefficients
+        See Final exam question 13 (c) for more details
+    """    
+    # WRITE YOUR CODE HERE
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    
+        
+    patient_icd = import_icd() # DO NOT MODIFY
+    icd_index = get_icd_index(patient_icd) # DO NOT MODIFY
+    
+    X,y = process_patient_icd(patient_icd, icd_index) # test code for question (a)    
+    fit_lr = train_and_evaluate_LR(X,y) # test code for question (b)
+    plot_top5_ICD_codes(fit_lr, icd_index) # test code for question (c)
+    
+
+
+
+
+    
+
+
